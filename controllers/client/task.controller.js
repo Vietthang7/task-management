@@ -11,7 +11,16 @@ module.exports.index = async (req, res) => {
     find.status = status;
   }
   // Hết lọc theo trạng thái
-  const tasks = await Task.find(find);
+
+  // Sắp xếp
+  const sort = {};
+  const sortKey = req.query.sortKey;
+  const sortValue = req.query.sortValue;
+  if(sortKey && sortValue){
+    sort[sortKey] = sortValue;
+  }
+  // End Sắp xếp
+  const tasks = await Task.find(find).sort(sort);
   res.json(tasks);
 };
 // [GET]/tasks/detail/:id
