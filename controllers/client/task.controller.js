@@ -33,16 +33,16 @@ module.exports.index = async (req, res) => {
   }
   const skip = (page - 1) * limitItems;
   // Hết Phân trang
-  if(req.query.keyword) {
+  if (req.query.keyword) {
     const regex = new RegExp(req.query.keyword, "i");
     find.title = regex;
   }
   // Hết Tìm kiếm
   const tasks = await Task
-  .find(find)
-  .sort(sort)
-  .limit(limitItems)
-  .skip(skip);
+    .find(find)
+    .sort(sort)
+    .limit(limitItems)
+    .skip(skip);
 
   res.json(tasks);
 };
@@ -61,14 +61,14 @@ module.exports.detail = async (req, res) => {
     });
   }
 };
-// [PATCH] /tasks/change-status/:id
+// [PATCH] /tasks/change-status
 module.exports.changeStatus = async (req, res) => {
   try {
-    const id = req.params.id;
+    const ids = req.body.ids;
     const status = req.body.status;
 
-    await Task.updateOne({
-      _id: id
+    await Task.updateMany({
+      _id: { $in: ids }
     }, {
       status: status
     });
