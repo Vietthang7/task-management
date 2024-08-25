@@ -16,11 +16,29 @@ module.exports.index = async (req, res) => {
   const sort = {};
   const sortKey = req.query.sortKey;
   const sortValue = req.query.sortValue;
-  if(sortKey && sortValue){
+  if (sortKey && sortValue) {
     sort[sortKey] = sortValue;
   }
   // End Sắp xếp
-  const tasks = await Task.find(find).sort(sort);
+
+
+  // Phân trang
+  let limitItems = 2;
+  if (req.query.limitItems) {
+    limitItems = parseInt(req.query.limitItems);
+  }
+  let page = 1;
+  if (req.query.page) {
+    page = parseInt(req.query.page);
+  }
+  const skip = (page - 1) * limitItems;
+  // Hết Phân trang
+  const tasks = await Task
+  .find(find)
+  .sort(sort)
+  .limit(limitItems)
+  .skip(skip);
+  
   res.json(tasks);
 };
 // [GET]/tasks/detail/:id
