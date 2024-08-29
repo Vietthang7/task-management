@@ -4,6 +4,14 @@ const User = require("../../models/user.model");
 // [GET]/tasks
 module.exports.index = async (req, res) => {
   const find = {
+    $or: [
+      {
+        createdBy: req.user.id
+      },
+      {
+        listUser: req.user.id
+      }
+    ],
     deleted: false
   };
   // Lọc theo trạng thái
@@ -96,7 +104,7 @@ module.exports.create = async (req, res) => {
     if (listUser.length !== users.length) {
       res.json({
         code: 400,
-        message:"Người tham gia task không hợp lệ"
+        message: "Người tham gia task không hợp lệ"
       });
       return;
     }
@@ -104,7 +112,7 @@ module.exports.create = async (req, res) => {
     await task.save();
     res.json({
       message: "Tạo mới công việc thành công!",
-      task : task
+      task: task
     });
   } catch (error) {
     res.json({
