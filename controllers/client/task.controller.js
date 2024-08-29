@@ -1,4 +1,5 @@
 const Task = require("../../models/task.model");
+const User = require("../../models/user.model");
 
 // [GET]/tasks
 module.exports.index = async (req, res) => {
@@ -86,6 +87,19 @@ module.exports.changeStatus = async (req, res) => {
 module.exports.create = async (req, res) => {
   try {
     req.body.createdBy = req.user.id;
+    const listUser = req.body.listUser;
+    const users = await User.find({
+      _id: {
+        $in: listUser
+      }
+    }).select("_id");
+    if (listUser.length !== users.length) {
+      res.json({
+        code: 400,
+        message:"Người tham gia task không hợp lệ"
+      });
+      return;
+    }
     const task = new Task(req.body);
     await task.save();
     res.json({
@@ -103,8 +117,8 @@ module.exports.edit = async (req, res) => {
   try {
     const id = req.params.id;
     await Task.updateOne({
-      _id : id
-    },req.body);
+      _id: id
+    }, req.body);
 
     res.json({
       message: "Cập nhật công việc thành công!"
@@ -123,7 +137,7 @@ module.exports.delete = async (req, res) => {
     await Task.updateMany({
       _id: { $in: ids }
     }, {
-      deleted : true
+      deleted: true
     });
 
     res.json({
