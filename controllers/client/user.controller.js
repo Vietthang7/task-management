@@ -147,9 +147,8 @@ module.exports.resetPassword = async (req, res) => {
 };
 // [GET] /users/profile/:id
 module.exports.profile = async (req, res) => {
-  const id = req.params.id;
   const user = await User.findOne({
-    _id: id,
+    token: req.tokenVeridy,
     deleted: false
   }).select("-password -token");
   res.json({
