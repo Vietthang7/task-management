@@ -108,6 +108,17 @@ module.exports.create = async (req, res) => {
       });
       return;
     }
+    const parentTask = req.body.parentId;
+    const existparentTask = await Task.findOne({
+      _id: parentTask,
+    });
+    if (!existparentTask) {
+      res.json({
+        code: 400,
+        message: "Không tồn tại task cha trong hệ thống !"
+      });
+      return;
+    }
     const task = new Task(req.body);
     await task.save();
     res.json({
