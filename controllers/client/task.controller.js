@@ -32,16 +32,21 @@ module.exports.index = async (req, res) => {
 
 
   // Phân trang
-  let limitItems = 2;
+  let limitItems = 4;
   if (req.query.limitItems) {
     limitItems = parseInt(req.query.limitItems);
   }
+
   let page = 1;
   if (req.query.page) {
     page = parseInt(req.query.page);
   }
+
   const skip = (page - 1) * limitItems;
   // Hết Phân trang
+
+  
+  // Tìm kiếm
   if (req.query.keyword) {
     const regex = new RegExp(req.query.keyword, "i");
     find.title = regex;
